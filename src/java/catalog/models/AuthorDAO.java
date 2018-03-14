@@ -30,32 +30,57 @@ public class AuthorDAO extends CommonDAO<Author> {
 
     @Override
     public Author create(Author object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement statement = connection
+                    .prepareStatement(SQLConstant.CREATE_AUTHOR);
+
+            if (object.getFirstName_author().isEmpty()
+                    && object.getLastName_author().isEmpty()) {
+                return null;
+            } else {
+                statement.setString(1, object.getLastName_author());
+                statement.setString(2, object.getFirstName_author());
+                int result = statement.executeUpdate();
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return object;
     }
 
     @Override
     public boolean delete(Author object) {
-        //to do
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            PreparedStatement statement = connection
+                    .prepareStatement(SQLConstant.DELETE_AUTHOR);
+
+            statement.setInt(1, object.getId_author());
+            statement.executeUpdate();
+
+            statement.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
     }
 
     @Override
     public boolean update(Author object) {
-        //to fix
         try {
             PreparedStatement statement = connection
                     .prepareStatement(SQLConstant.UPDATE_USER_BY_ID);
 
-            statement.setString(1, object.getFirstName_author());
-            statement.setString(2, object.getLastName_author());
+            statement.setString(1, object.getLastName_author());
+            statement.setString(2, object.getFirstName_author());
             statement.setInt(3, object.getId_author());
-            //on va utiliser l'objet author pour le remplir
-            //1 si on l'a trouvé et sinon 0
 
+            statement.executeUpdate();
+            statement.close();
         } catch (SQLException ex) {
             Logger.getLogger(AuthorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return true;
     }
 
     /**
